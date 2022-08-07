@@ -6,22 +6,19 @@ const { dbConnection } = require('./database/config');
 // Server
 const app = express();
 
-// Los CORS sirven para hacer las configuraciónes en el servidor para que acepte peticiones de diferentes dominios.
-// CORS
+// Middlewares
+// CORS - Los CORS sirven para hacer las configuraciónes en el servidor para que acepte peticiones de diferentes dominios.
 app.use(cors());
+// Lectura y parseo del body
+app.use(express.json());
 
 // Data Base
 dbConnection();
 
 // Routes
-app.get('/', (req, res) => {
+app.use('/api/users', require('./routes/users-routes'));
+app.use('/api/login', require('./routes/auth-routes'));
 
-    res.json({
-        ok: true,
-        msg: 'Hola Mundo'
-    });
-
-});
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${ process.env.PORT }`);

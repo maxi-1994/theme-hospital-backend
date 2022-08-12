@@ -1,12 +1,10 @@
 const { Router } = require('express');
-
-const authController = require('../controllers/auth-controller');
-
 const { check } = require('express-validator');
 const { fieldsValidation } = require('../middlewares/fields-validation');
 
-
 const router = Router();
+const authController = require('../controllers/auth-controller');
+
 
 // '/api/login'
 router.post('/',

@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const { dbConnection } = require('./database/config');
 
+const baseUrl = require('./helpers/constants');
+
 // Server
 const app = express();
 
@@ -16,8 +18,12 @@ app.use(express.json());
 dbConnection();
 
 // Routes
-app.use('/api/users', require('./routes/users-routes'));
-app.use('/api/login', require('./routes/auth-routes'));
+app.use(baseUrl.usersURL, require('./routes/users-routes'));
+app.use(baseUrl.hospitalsURL, require('./routes/hospitals-routes'));
+app.use(baseUrl.medicsURL, require('./routes/medics-routes'));
+app.use(baseUrl.loginURL, require('./routes/auth-routes')); 
+app.use(baseUrl.allURL, require('./routes/search-routes'));
+app.use(baseUrl.uploadURL, require('./routes/uploads-routes'));
 
 
 app.listen(process.env.PORT, () => {

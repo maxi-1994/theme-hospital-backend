@@ -7,23 +7,23 @@ const { Schema, model } = require('mongoose');
 const userSchema = Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     password: {
         type: String,
-        require: true,
+        required: true,
     },
     img: {
         type: String,
     },
     role: { // adminRole - userRole
         type: String,
-        require: true,
+        required: true,
         default: 'USER_ROLE',
     },
     google: {
@@ -39,8 +39,9 @@ userSchema.method('toJSON', function() {
 });
 
 /*
-    Cuando se necesita crear usuarios, es decir, un nuevo campo en la tabla, se va a necesitar exponer el siguiente model. Tendrá
-    las intrucciones para operaciones CRUD.
-    Como 1er parametro va el nombre de la colección y como 2do param va el schema que debe respetar el model.
+    - Cuando se necesita crear usuarios, es decir, un nuevo campo en la tabla, se va a necesitar exponer el siguiente model. Tendrá
+      las intrucciones para operaciones CRUD.
+    - Como 1er parametro va el nombre de la colección y como 2do param va el schema que debe respetar el model.
+    - En el caso de que la colección no exista, se creará una nueva automaticamente.
 */
 module.exports = model('User', userSchema);

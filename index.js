@@ -11,6 +11,10 @@ const app = express();
 // Middlewares
 // CORS - Los CORS sirven para hacer las configuraciónes en el servidor para que acepte peticiones de diferentes dominios.
 app.use(cors());
+
+// Public folder -> muestra el archivo index.html en la ruta local
+app.use(express.static('public'));
+
 // Lectura y parseo del body
 app.use(express.json());
 

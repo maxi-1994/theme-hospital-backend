@@ -1,7 +1,8 @@
 const { response } = require('express');
 const { getJWT } = require('../helpers/jwt'); // npm i bcryptjs
+const { googleVerify } =  require('../helpers/google-verify');
 const bcryptjs = require('bcryptjs');
-const User = require('../models/user');
+const UserModel = require('../models/user');
 
 
 exports.login = async (req, res = response) => {
@@ -9,7 +10,7 @@ exports.login = async (req, res = response) => {
 
     try {
         // check email
-        const userDB = await User.findOne({ email: req.body.email });
+        const userDB = await UserModel.findOne({ email: req.body.email });
 
         if (!userDB) {
             return res.status(404).json({
@@ -43,6 +44,45 @@ exports.login = async (req, res = response) => {
         res.status(500).json({
             ok: false,
             msg: 'Unexpected Error'
+        });
+    }
+}
+
+exports.googleSignIn = async (req, res = response) => {
+    try {
+        const { email, name, picture } = await googleVerify(req.body.token);
+
+        const userDB = await UserModel.findOne({ email: email });
+        let user;
+
+        if (!userDB) {
+            // El password no va a ser usado ya que se crea por medio de la cuenta de google, en el password del UserModel se agrega '@@@' simplemente para que no salte el error de la validación del password required.
+            user = new UserModel({
+                name: name,
+                email: email,
+                password: '@@@',
+                img: picture,
+                google: true,
+            });
+        } else {
+            user = userDB;
+            user.google = true;
+        }
+
+        await user.save();
+
+        const token = await getJWT(user);
+
+        res.status(200).json({
+            ok: true,
+            user,
+            token
+        });
+
+    } catch(error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Google token invalid'
         });
     }
 }

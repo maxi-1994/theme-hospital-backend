@@ -16,4 +16,12 @@ router.post('/',
     authController.login
 );
 
+router.post('/google',
+    [
+        check('token', 'Google token is required').not().isEmpty(),
+        fieldsValidation
+    ], 
+    authController.googleSignIn
+);
+
 module.exports = router;

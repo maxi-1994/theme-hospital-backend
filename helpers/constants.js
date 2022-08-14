@@ -7,10 +7,4 @@ const baseUrl = {
     uploadURL: '/api/uploads',
 }
 
-// const modelNames = {
-//     userName,
-//     hospitalName,
-//     medicName,
-// }
-
 module.exports = baseUrl;

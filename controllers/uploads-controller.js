@@ -7,12 +7,12 @@ const { updateImg } = require('../helpers/update-img');
 
 
 /*
-    Desde POSTMAN para subir un archivo en la parte de body, en el tab "form-data", se le asigna un KEY, en este caso "image", luego se podra cargar un archivo y ser enviado en la req.
+    Desde POSTMAN para subir un archivo al servidor en la parte de body, en el tab "form-data", se le asigna un KEY, en este caso "image", luego se podra cargar un archivo y ser enviado en la req.
 */
 exports.fileUpload = async (req, res = response) => {
 
     const type = req.params.type;
-    const id = req.params.id;
+    const id = req.params.id; // ID puede ser del user, hospital o medic al que se le quiere subir la img
 
     // Validar types
     const validTypes = ['users', 'hospitals', 'medics'];
@@ -33,7 +33,7 @@ exports.fileUpload = async (req, res = response) => {
     }
 
     // Procesar la imagen
-    const file = req.files.image; // image es la KEY
+    const file = req.files.image; // image es la KEY // form-data -> key: image, value: archivo cargado
 
     const splitNameFile = file.name.split('.'); // Puede que haya más puntos además del de la extensión, de esta manera, obtengo un array de cada uno de los string que los separaba el punto.
     const fileExtension = splitNameFile[splitNameFile.length - 1]; // Obtengo el último string del array. En este caso la extension "jpg";

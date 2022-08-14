@@ -20,10 +20,13 @@ router.post('/create',
 
 router.put('/update/:id', 
     [
+        validateJWT,
+        check('name', 'Hospital name is required').not().isEmpty(),
+        fieldsValidation
     ],
     hospitalsController.updateHospital
 );
 
-router.delete('/delete/:id', hospitalsController.daleteHospital);
+router.delete('/delete/:id', validateJWT, hospitalsController.daleteHospital);
 
 module.exports = router;

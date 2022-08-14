@@ -21,10 +21,14 @@ router.post('/create',
 
 router.put('/update/:id', 
     [
+        validateJWT,
+        check('name', 'Medic name is required').not().isEmpty(),
+        check('hospital', 'HospitalId must be valid').isMongoId(),
+        fieldsValidation
     ],
     medicsController.updateMedic
 );
 
-router.delete('/delete/:id', medicsController.daleteMedic);
+router.delete('/delete/:id', validateJWT , medicsController.daleteMedic);
 
 module.exports = router;

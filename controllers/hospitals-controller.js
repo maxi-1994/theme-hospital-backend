@@ -56,16 +56,73 @@ exports.createHospital = async (req, res = response) => {
 }
 
 exports.updateHospital = async (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'update hospitals'
-    })
+
+    const id = req.params.id;
+    const uid = req.uid // uid del user obtenido del token. user que esta actualizando el hospital.
+
+    try {
+        const hospitalDB = await HospitalModel.findById(id);
+
+        if (!hospitalDB) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital does not exist.'
+            });
+        }
+
+        // ...req.body -> spread operator -> carga todos los campos de la request.
+        const hospitalChanges = {
+            ...req.body,
+            user: uid
+            
+        };
+
+        const hospitalUpdated = await HospitalModel.findByIdAndUpdate(id, hospitalChanges, { new: true });
+
+        res.json({
+            ok: true,
+            msg: 'Hospital updated',
+            hospitalUpdated
+        })
+
+        
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error.',
+        });
+    }
 }
 
 exports.daleteHospital = async (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'dalete hospitals'
-    })
+
+    const id = req.params.id;
+
+    try {
+        const hospitalDB = await HospitalModel.findById(id);
+
+        if (!hospitalDB) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital does not exist.'
+            });
+        }
+
+        await HospitalModel.findByIdAndDelete(id);
+
+        res.json({
+            ok: true,
+            msg: 'The hospital was deleted.',
+        })
+
+        
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error.'
+        });
+    }
 }
 

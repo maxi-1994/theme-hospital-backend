@@ -86,3 +86,14 @@ exports.googleSignIn = async (req, res = response) => {
         });
     }
 }
+
+exports.renewToken = async (req, res = response) => {
+    // Se envia el token viejo para renobarlo, así obtniendo un nuevo token con una fecha de expiración nueva.
+    const uid = req.uid;
+    const token = await getJWT(uid);
+
+    res.status(2000).json({
+        ok: true,
+        token
+    });
+}

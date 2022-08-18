@@ -14,7 +14,7 @@ exports.getMedics = async (req, res = response) => {
 
 exports.createMedic = async (req, res = response) => {
 
-    const uidUser = req.uid;
+    const uidUser = req.uid; // Obtengo el UID del user que lo esta creando.
     const idHospital = req.body.hospitalId;
 
     const medic = new MedicModel({

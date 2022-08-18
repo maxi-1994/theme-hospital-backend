@@ -32,7 +32,7 @@ exports.login = async (req, res = response) => {
 
         // Generate JWT
         // El token generado se usará para validar las rutas en las cuales deben tener cierto tipo de protección o para que ciertos usuarios autenticados puedan ejecutarlas.
-        const token = await getJWT(userDB.id);
+        const token = await getJWT(userDB.id); // Se le asigna el token al user logueado
 
         // Si pego el Token que me devuelve Postman en jwt.io , se vera el payload y la fecha de expiración seteada
         res.json({

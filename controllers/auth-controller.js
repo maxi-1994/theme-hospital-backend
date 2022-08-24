@@ -37,7 +37,7 @@ exports.login = async (req, res = response) => {
         // Si pego el Token que me devuelve Postman en jwt.io , se vera el payload y la fecha de expiración seteada
         res.json({
             ok: true,
-            msg: token
+            token: token
         });
     } catch (error) {
         console.log(error);
@@ -87,12 +87,12 @@ exports.googleSignIn = async (req, res = response) => {
     }
 }
 
-exports.renewToken = async (req, res = response) => {
-    // Se envia el token viejo para renobarlo, así obtniendo un nuevo token con una fecha de expiración nueva.
+exports.validateToken = async (req, res = response) => {
+    // Se valida el token para los guard de Angular
     const uid = req.uid;
     const token = await getJWT(uid);
 
-    res.status(2000).json({
+    res.status(200).json({
         ok: true,
         token
     });

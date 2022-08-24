@@ -18,7 +18,7 @@ exports.getUsers = async (req, res) => {
 
     // Colección de promesas. Concateno las promesas para ejecturlas al mismo tiempo.
     const [ users, totalUsers ] = await Promise.all([
-        UserModel.find({}, 'name email role google img').skip(from).limit(5),
+        UserModel.find({}, 'name email role google img').skip(from), // .limit(5)
         UserModel.countDocuments()
     ]);
 

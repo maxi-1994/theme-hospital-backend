@@ -25,12 +25,12 @@ router.post('/google',
     authController.googleSignIn
 );
 
-router.get('/renew',
+router.get('/validateToken',
     [
         validateJWT,
         fieldsValidation
     ], 
-    authController.renewToken
+    authController.validateToken
 );
 
 module.exports = router;

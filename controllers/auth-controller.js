@@ -90,10 +90,15 @@ exports.googleSignIn = async (req, res = response) => {
 exports.validateToken = async (req, res = response) => {
     // Se valida el token para los guard de Angular
     const uid = req.uid;
-    const token = await getJWT(uid);
+
+    const [ user, token ] = await Promise.all([
+        UserModel.findById(uid),
+        getJWT(uid)
+    ]);
 
     res.status(200).json({
         ok: true,
-        token
+        token: token,
+        user: user
     });
 }

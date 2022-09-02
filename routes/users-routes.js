@@ -24,7 +24,7 @@ router.put('/update/:id',
         validateJWT,
         check('name', 'Name is required').not().isEmpty(),
         check('role', 'Role is required').not().isEmpty(),
-        check('email', 'Name is required').isEmail(),
+        check('email', 'Email is required').isEmail(),
         fieldsValidation,
     ],
     usersController.updateUser

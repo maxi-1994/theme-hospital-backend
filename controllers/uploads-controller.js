@@ -7,12 +7,12 @@ const { updateImg } = require('../helpers/update-img');
 
 
 /*
-    Desde POSTMAN para subir un archivo al servidor en la parte de body, en el tab "form-data", se le asigna un KEY, en este caso "image", luego se podra cargar un archivo y ser enviado en la req.
+    Desde POSTMAN para subir un archivo al servidor en la parte de body, en el tab "form-data", se le asigna una KEY, en este caso "image", luego se podra cargar un archivo y ser enviado en la req.
 */
 exports.fileUpload = async (req, res = response) => {
 
     const type = req.params.type;
-    const id = req.params.id; // ID puede ser del user, hospital o medic al que se le quiere subir la img
+    const id = req.params.id; // ID puede ser del user, hospital o medic al que se le quiere asignar la img.
 
     // Validar types
     const validTypes = ['users', 'hospitals', 'medics'];
@@ -20,7 +20,7 @@ exports.fileUpload = async (req, res = response) => {
     if (!validTypes.includes(type)) {
         return res.status(400).json({
             ok: false,
-            msg: 'It is not an users, a hospitals or a medics',
+            msg: 'Incorrect type. It must be a user, a medic or a hospital',
         });
     }
 
@@ -44,17 +44,17 @@ exports.fileUpload = async (req, res = response) => {
     if (!validExtensions.includes(fileExtension)) {
         return res.status(400).json({
             ok: false,
-            msg: 'It is not a valid extension',
+            msg: 'It is not a valid extension. It must be png, jpg, jpeg or gif',
         });
     }
 
-    // Generar el nombre del archivo
+    // Generar el nombre del archivo.
     const fileName = `${uuidv4()}.${fileExtension}`;
 
-    // Crear path para guardar la imagen
+    // Crear path para guardar la imagen.
     const uploadPath = `./uploads/${type}/${fileName}`;
 
-    // Use the mv() method to place the file somewhere on your server
+    // Use the mv() method to place the file somewhere on your server.
     // const file = req.files.image;
     file.mv(uploadPath, (error) => {
         if (error) {
@@ -65,7 +65,7 @@ exports.fileUpload = async (req, res = response) => {
             });
         }
 
-        // actualizar base de datos para que el se le asigne la imagen al usuario, medico u hospital que esta generando la request.
+        // actualizar base de datos para que se le asigne la imagen al usuario, medico u hospital que esta generando la request.
         updateImg(type, id, fileName);
         
         res.json({

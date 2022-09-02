@@ -2,7 +2,6 @@ const { response } = require('express');
 const jwt = require('jsonwebtoken');
 
 const validateJWT = (req, res = response, next) => {
-
     // Leer el token de los headers
     const token = req.header('x-token');
 

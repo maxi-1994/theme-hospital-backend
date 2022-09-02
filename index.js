@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 
 // Public folder -> muestra el archivo index.html en la ruta local
-app.use(express.static('public'));
+app.use(express.static('public')); // Para generar prueba de la request del login de google 
 
 // Lectura y parseo del body
 app.use(express.json());

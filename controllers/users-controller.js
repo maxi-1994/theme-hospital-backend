@@ -4,7 +4,6 @@ const bcryptjs = require('bcryptjs');
 const UserModel = require('../models/user');
 
 exports.getUsers = async (req, res) => {
-
     /*
         - FIND Como 1er param se colocan llaves para especificar un filtro y como 2do para un string con solos los elementos que quiero trae.
         - SKIP Como param se coloca el queryParam obtenido de la ruta (number). De esta manera los registros a mostrar serán a partir del número especificado.
@@ -87,7 +86,7 @@ exports.updateUser = async (req, res = response) => {
         const { password, google, ...fields  } = req.body; // Desestructurando con SPREAD(...fields), obtengo un nuevo objeto llamado FIELDS, las props password y google no estaran en el objeto FIELDS. 
 
         if (userDB.email !== req.body.email) {
-            const email = await User.findOne({ email: req.body.email });
+            const email = await UserModel.findOne({ email: req.body.email });
             if (email) {
                 return res.status(400).json({
                     ok: false,
@@ -96,9 +95,16 @@ exports.updateUser = async (req, res = response) => {
             } 
         }
 
-        fields.email = req.body.email;
+        if (!userDB.google) {
+            fields.email = req.body.email;
+        } else if (userDB.email !== req.body.email) {
+            return res.status(200).json({
+                ok: false,
+                msg: 'The google users can not change the email'
+            });
+        }
 
-        const userUpdated = await User.findByIdAndUpdate(uid, fields, { new: true }); // new: true indica que en la response me muestra el usuario actualizado, si no, muestra como estaba antes de hacer el update
+        const userUpdated = await UserModel.findByIdAndUpdate(uid, fields, { new: true }); // new: true indica que en la response me muestra el usuario actualizado, si no, muestra como estaba antes de hacer el update
 
         res.json({
             ok: true,

@@ -7,7 +7,7 @@ const router = Router();
 const medicsController = require('../controllers/medics-controller');
 
 // /api/medics
-router.get('/', medicsController.getMedics);
+router.get('/', validateJWT, medicsController.getMedics);
 
 router.post('/create', 
     [
@@ -29,6 +29,8 @@ router.put('/update/:id',
     medicsController.updateMedic
 );
 
-router.delete('/delete/:id', validateJWT , medicsController.daleteMedic);
+router.delete('/delete/:id', validateJWT, medicsController.daleteMedic);
+
+router.get('/:id', validateJWT, medicsController.getMedicById);
 
 module.exports = router;

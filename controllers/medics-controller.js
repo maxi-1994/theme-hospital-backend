@@ -62,8 +62,6 @@ exports.updateMedic = async (req, res = response) => {
             ...req.body
         };
 
-        console.log('===================>', medicChanges);
-
         const medicUpdated = await MedicModel.findByIdAndUpdate(id, medicChanges, { new: true });
 
         res.status(200).json({

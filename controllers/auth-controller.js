@@ -1,18 +1,18 @@
 const { response } = require('express');
 const { getJWT } = require('../helpers/jwt'); // npm i bcryptjs
 const { googleVerify } =  require('../helpers/google-verify');
+const { getMenuFrontend } = require('../helpers/frontend-menu');
 const bcryptjs = require('bcryptjs');
 const UserModel = require('../models/user');
-
 
 exports.login = async (req, res = response) => {
     // const { email, passoword } = req.body;
 
     try {
         // check email
-        const userDB = await UserModel.findOne({ email: req.body.email });
+        const user = await UserModel.findOne({ email: req.body.email });
 
-        if (!userDB) {
+        if (!user) {
             return res.status(404).json({
                 ok: false,
                 msg: 'Email or Password invalid'
@@ -20,7 +20,7 @@ exports.login = async (req, res = response) => {
         }
 
         // check password
-        const validPassword = bcryptjs.compareSync(req.body.password, userDB.password); // Comparo el password encriptado de la req con el del usuario de la bd
+        const validPassword = bcryptjs.compareSync(req.body.password, user.password); // Comparo el password encriptado de la req con el del usuario de la bd
 
         if (!validPassword) {
             return res.status(400).json({
@@ -32,12 +32,13 @@ exports.login = async (req, res = response) => {
 
         // Generate JWT
         // El token generado se usará para validar las rutas en las cuales deben tener cierto tipo de protección o para que ciertos usuarios autenticados puedan ejecutarlas.
-        const token = await getJWT(userDB.id); // Se le asigna el token al user logueado
+        const token = await getJWT(user.id); // Se le asigna el token al user logueado
 
         // Si pego el Token que me devuelve Postman en jwt.io , se vera el payload y la fecha de expiración seteada
         res.json({
             ok: true,
-            token: token
+            token: token,
+            menu: getMenuFrontend(user.role)
         });
     } catch (error) {
         console.log(error);
@@ -76,7 +77,8 @@ exports.googleSignIn = async (req, res = response) => {
         res.status(200).json({
             ok: true,
             user,
-            token
+            token,
+            menu: getMenuFrontend(user.role)
         });
 
     } catch(error) {
@@ -99,6 +101,7 @@ exports.validateToken = async (req, res = response) => {
     res.status(200).json({
         ok: true,
         token: token,
-        user: user
+        user: user,
+        menu: getMenuFrontend(user.role)
     });
 }

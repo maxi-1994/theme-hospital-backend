@@ -1,7 +1,8 @@
 const { Router } = require('express');
 const { check } = require('express-validator'); // npm i express-validator -> es un middleware para validaciones.
+
 const { fieldsValidation } = require('../middlewares/fields-validation'); // Custom middleware - validación de campos.
-const { validateJWT } = require('../middlewares/validate-jwt'); // Custom middleware - validación de token.
+const { validateJWT, validateAdminRole, validateAdminRoleOrSameUser } = require('../middlewares/validate-jwt'); // Custom middleware - validación de token.
 
 const router = Router();
 const usersController = require('../controllers/users-controller');
@@ -22,6 +23,7 @@ router.post('/create',
 router.put('/update/:id', 
     [
         validateJWT,
+        validateAdminRoleOrSameUser,
         check('name', 'Name is required').not().isEmpty(),
         check('role', 'Role is required').not().isEmpty(),
         check('email', 'Email is required').isEmail(),
@@ -30,6 +32,6 @@ router.put('/update/:id',
     usersController.updateUser
 );
 
-router.delete('/delete/:id', validateJWT, usersController.deleteUser);
+router.delete('/delete/:id', [validateJWT, validateAdminRole], usersController.deleteUser);
 
 module.exports = router;

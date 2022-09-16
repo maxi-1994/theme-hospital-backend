@@ -1,5 +1,6 @@
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 const validateJWT = (req, res = response, next) => {
     // Leer el token de los headers
@@ -35,6 +36,75 @@ const validateJWT = (req, res = response, next) => {
     };
 }
 
+const validateAdminRole = async (req, res = response, next) => {
+
+    const uid = req.uid; // Se obtiene ya que queda establecido del validateJWT cuando se verifica el token.
+
+    try {
+
+        const userDB = await User.findById(uid);
+
+        if (!userDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'User does not exist.'
+            });
+        }
+
+        if (userDB.role !== 'ADMIN_USER') {
+            return res.status(403).json({ // 403 -> unauthorized
+                ok: false,
+                msg: 'User unauthorized.'
+            });
+        }
+
+        next(); // Si existe el user y es un admin, se ejecuta el next()
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Contact with the administrator'
+        });
+    }
+}
+
+const validateAdminRoleOrSameUser = async (req, res = response, next) => {
+
+    const uid = req.uid; // Se obtiene ya que queda establecido del validateJWT cuando se verifica el token.
+    const idFromParams = req.params.id;
+
+    try {
+
+        const userDB = await User.findById(uid);
+
+        if (!userDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'User does not exist.'
+            });
+        }
+
+        if (userDB.role !== 'ADMIN_USER' && uid !== idFromParams) { // En el caso de que sea USER_ROLE, que el ID del token y el ID de la ruta son iguales, quiere decir que el user quiere actualizar su información.
+            return res.status(403).json({ // 403 -> unauthorized
+                ok: false,
+                msg: 'User unauthorized.'
+            });
+        }
+
+        next(); // Si existe el user y es un admin, se ejecuta el next()
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Contact with the administrator'
+        });
+    }
+}
+
 module.exports = {
-    validateJWT
+    validateJWT,
+    validateAdminRole,
+    validateAdminRoleOrSameUser
 }

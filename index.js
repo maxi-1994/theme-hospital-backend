@@ -1,6 +1,9 @@
 require('dotenv').config(); // Por defecto buscará un archivo con la extención .env y lo establecerá en las variables de entorno de node.
+const path = require('path');
+
 const express = require('express');
 const cors = require('cors');
+
 const { dbConnection } = require('./database/config');
 
 const baseUrl = require('./helpers/constants');
@@ -28,6 +31,11 @@ app.use(baseUrl.medicsURL, require('./routes/medics-routes'));
 app.use(baseUrl.loginURL, require('./routes/auth-routes')); 
 app.use(baseUrl.allURL, require('./routes/search-routes'));
 app.use(baseUrl.uploadURL, require('./routes/uploads-routes'));
+
+// Si la ruta no es ninguna de las principales, se construirá el path requerido. ej: http://localhost:4200/dashboard/progress -> "/progress" escrito a mano en la url de la web
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
 
 
 app.listen(process.env.PORT, () => {

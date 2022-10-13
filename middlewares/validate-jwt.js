@@ -22,8 +22,9 @@ const validateJWT = (req, res = response, next) => {
             Esa verificación se valida a partir del middleware validate-token.js. Debe estar importado y declarado en las rutas correspondientes.
         */
 
-        const tokenVerified = jwt.verify(token, process.env.JWT_SECRET);
-        req.uid = tokenVerified.uid;
+        const tokenVerified = jwt.verify(token, process.env.JWT_SECRET); // Verifico a que usuario pertenece el token
+
+        req.uid = tokenVerified.uid; // con la verificación obtengo el UID del usuario y lo envio en la request para luego, por ejemplo, validarlo en los guards de Angular.
 
         // Si la validación es correcta, terminara o pasará a la siguiente con el next. En el caso de que no este el next. La validación nunca termina.
         next()
